@@ -1,6 +1,6 @@
 /*
 * pxt-iot-lora node, Micro:Bit library for IoTLoRaNode
-* Copyright (C) 2018  Pi Supply
+* Copyright (C) 2018-2019  Pi Supply
 
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -14,29 +14,53 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+* Last Updated 2019-01-31-3
 */
 
 enum Channels {
+    //% block="One"    
     One = 1,
+    //% block="Two"
     Two = 2,
+    //% block="Three"
     Three = 3,
+    //% block="Four"
     Four = 4,
+    //% block="Five"
     Five = 5,
+    //% block="Six"
     Six = 6,
+    //% block="Seven"
     Seven = 7,
+    //% block="Eight"
     Eight = 8,
+    //% block="Nine"
     Nine = 9
 
 }
 enum SpreadingFactors {
+    //% block="Seven"
     Seven = 5,
+    //% block="Eight"
     Eight = 4,
+    //% block="Nine"
     Nine = 3,
+    //% block="Ten"
     Ten = 2,
+    //% block="Eleven"
     Eleven = 1,
+    //% block="Twelve"
     Twelve = 0
 
 }
+
+enum region {
+    //% block="EU868"
+    EU868 = 1,
+    //% block="US915"
+    US915 = 2
+}
+
 
 
 //% weight=10 color=#8bc34a icon="\uf1eb"
@@ -55,12 +79,16 @@ namespace IotLoRaNode {
         pins.digitalWritePin(DigitalPin.P16, 1)
         basic.pause(100)
         pins.digitalWritePin(DigitalPin.P16, 0)
-        serial.readLine()
+
+        basic.showNumber(0)
+        basic.showString(serial.readLine())
+        basic.showString(serial.readLine())
+        basic.showString(serial.readLine())
 
         /**
          * For this we are only going to use ABP & LoRa WAN Modes for now
          */
-
+        basic.showNumber(1)
         //Set to use LoRaWAN Mode
         serial.writeString("at+mode=0\r\n");
         serial.readLine()
@@ -86,7 +114,7 @@ namespace IotLoRaNode {
     }
     //%blockId="IotLoRaNode_DigitalValue"
     //%block="Add Digital Value: %value on channel: %chanNum"
-    export function DigitalValue(value: boolean, chanNum: channels): void {
+    export function DigitalValue(value: boolean, chanNum: Channels): void {
         /**
          * Add digital value
          */
@@ -96,7 +124,7 @@ namespace IotLoRaNode {
     }
     //%blockId="IotLoRaNode_AnalogueValue" block="Add Analogue Value: %value on channel: %chanNum"
     //% value.min=0 value.max=254
-    export function AnalogueValue(value: number, chanNum: channels): void {
+    export function AnalogueValue(value: number, chanNum: Channels): void {
         /**
          * Add analogue value
          */
@@ -109,7 +137,7 @@ namespace IotLoRaNode {
     }
 
     //%blockId="IotLoRaNode_tempertureValue" block="Add Temperature Value: $temperatureVal to channel: %id"
-    export function TempertureValue(temperatureVal: number, chanNum: channels): void {
+    export function TempertureValue(temperatureVal: number, chanNum: Channels): void {
         /**
          * Add temperature value
          */
@@ -122,7 +150,7 @@ namespace IotLoRaNode {
     }
     //%blockId="IotLoRaNode_HumidityValue" block="Add Humidity Value: $humidityVal to channel: %id"
     //%advanced=true
-    export function HumidityValue(humidityVal: number, chanNum: channels): void {
+    export function HumidityValue(humidityVal: number, chanNum: Channels): void {
         /**
          * Add humidity value
          */
@@ -148,7 +176,7 @@ namespace IotLoRaNode {
     **/
 
     //%blockId="IotLoRaNode_LightValue" block="Add light Value: $lightVal on channel: %id"
-    export function LightValue(lightVal: number, chanNum: channels): void {
+    export function LightValue(lightVal: number, chanNum: Channels): void {
         /**
          * Add light value
          */
@@ -167,6 +195,16 @@ namespace IotLoRaNode {
         serial.writeString("at+send=0,1," + payload + "\r\n");
         basic.showString(serial.readUntil(serial.delimiters(Delimiters.NewLine)))
         basic.showString(serial.readUntil(serial.delimiters(Delimiters.NewLine)))
+        payload = ""
+    }
+    //%blockId="IotLoRaNode_SetRegion" block="Set LoRa Region"
+    export function SetRegion(regionVal: region): void {
+        /**
+         * Transmit Message
+         */
+
+        serial.writeString("at+band=," + regionVal + "\r\n");
+        serial.readUntil(serial.delimiters(Delimiters.NewLine))
         payload = ""
     }
 
